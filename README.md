@@ -1,21 +1,32 @@
-# Claude Skills Clean — ChatGPT / Claude Project README
+# Claude Skills Clean — ChatGPT / Claude
+
+**English quick reference:** Use **`PERSONA_SKILL_LOADER_PROMPT_HU.md`** (or your own upload-based instructions) for **ChatGPT Projects** with uploaded `claude-skills-index.json` and optional ZIP. For **Claude** with a **GitHub repo** (Claude Code or repo-linked Project), use **`PERSONA_SKILL_LOADER_PROMPT_CLAUDE.md`** and paste **`CLAUDE_PROJECT_INSTRUCTIONS.md`** into Project Instructions.
 
 Ez a README azt írja le, hogyan érdemes a megtisztított `claude-skills-clean` csomagot ChatGPT Projectként vagy Claude Projectként használni. A cél nem az, hogy az LLM egyszerre betöltse az összes skillt, hanem az, hogy az `index.json` alapján kiválassza a megfelelő skillt, majd csak a szükséges `SKILL.md`, `references/`, `scripts/`, `assets/` és példafájlokat használja.
 
+## ChatGPT vs Claude (feltöltés vs GitHub)
+
+| Platform | Tudás forrása | Skill-loader dokumentum |
+|----------|----------------|-------------------------|
+| **ChatGPT** Project | Feltöltött fájlok: `claude-skills-index.json`, opcionálisan ZIP vagy kicsomagolt mappák | `PERSONA_SKILL_LOADER_PROMPT_HU.md` |
+| **Claude** (Code / Project + repo) | **GitHub-on lévő klón**: fájlok a repó útvonalain | `PERSONA_SKILL_LOADER_PROMPT_CLAUDE.md` + `CLAUDE_PROJECT_INSTRUCTIONS.md` |
+
+A magyar **ZIP / kicsomagolás** szöveg a ChatGPT-féle feltöltős workflow-hoz illik. Claudénál a repót klónozd vagy kösd be a projektbe; az indexet és a skilleket **közvetlenül a fájlfából** olvasd, nem „ZIP feltöltés” logikával.
+
 ## Csomag célja
 
-A csomag egy skill-router alapú tudásbázis. A projektbe feltöltött `index.json` megmondja, milyen skillek vannak, hol találhatók, melyikhez milyen referencia- és scriptfájl tartozik. A projekt instrukciói arra kényszerítik az LLM-et, hogy a felhasználói kérés kontextusa alapján válasszon skillt, és ne olvassa be feleslegesen a teljes csomagot.
+A csomag egy skill-router alapú tudásbázis. A **skill-katalógus** (`index.json` / `claude-skills-index.json`) megmondja, milyen skillek vannak, hol találhatók, melyikhez milyen referencia- és scriptfájl tartozik. A projekt instrukciói arra kényszerítik az LLM-et, hogy a felhasználói kérés kontextusa alapján válasszon skillt, és ne olvassa be feleslegesen a teljes csomagot.
 
 ## Fő fájlok
 
 | Fájl | Kötelező? | Funkció |
 |---|---:|---|
-| `claude-skills-index.json` | igen | Skill-katalógus: kategóriák, útvonalak, leírások, címkék, fájllisták. |
-| `PERSONA_SKILL_LOADER_PROMPT_HU.md` | igen | Beilleszthető LLM instrukció a skillválasztáshoz és betöltéshez. |
-| `claude-skills-clean.zip` | ajánlott | A tisztított forráscsomag, benne minden skill és saját kapcsolódó fájlja. |
-| `README_PROJECT_SETUP_HU.md` | ajánlott | Ez az útmutató. |
-| `PROJECT_UPLOAD_MANIFEST.json` | ajánlott | Gépileg olvasható feltöltési és használati manifest. |
-| `CHATGPT_CLAUDE_PROJECT_INSTRUCTIONS_HU.md` | ajánlott | Rövidített, közvetlenül bemásolható projektinstrukció. |
+| `claude-skills-index.json` | igen | Skill-katalógus: kategóriák, útvonalak, leírások, címkék, fájllisták (a repó gyökerében; megegyezik a `claude-skills-clean/index.json` struktúrájával). |
+| `PERSONA_SKILL_LOADER_PROMPT_HU.md` | ChatGPT-nél ajánlott | Magyar, beilleszthető instrukció feltöltött csomaghoz / ZIP-hez. |
+| `PERSONA_SKILL_LOADER_PROMPT_CLAUDE.md` | Claudénél ajánlott | Angol, **GitHub / repó** alapú skillválasztás és betöltés (Claude Code, repo-kötött Project). |
+| `CLAUDE_PROJECT_INSTRUCTIONS.md` | Claudénél ajánlott | Rövid szöveg a Claude **Project Instructions** mezőbe másolva. |
+| `claude-skills-clean/` | igen | A tisztított forráscsomag mappája: skillek, `index.json`. |
+| `README.md` | ajánlott | Ez az útmutató. |
 
 ## Skill-leltár
 
@@ -35,11 +46,9 @@ A csomag egy skill-router alapú tudásbázis. A projektbe feltöltött `index.j
 
 ## Javasolt projektstratégia
 
-A legmegbízhatóbb működéshez kétlépcsős használat ajánlott.
+**ChatGPT:** első szint — töltsd fel a `claude-skills-index.json`-t és a projektinstrukciót. Második szint — a kiválasztott skill fájljai vagy teljes ZIP; ha a ZIP belseje nem indexelt, kicsomagolva tölts fel mappákat.
 
-Első szint: mindig legyen feltöltve a `claude-skills-index.json` és a projektinstrukció. Ez elég a skill kiválasztásához.
-
-Második szint: a kiválasztott skill tényleges fájljait vagy a teljes `claude-skills-clean.zip` csomagot add hozzá a projekt tudásbázisához. Ha a platform nem kezeli jól a ZIP-et vagy túl sok fájlt, akkor csak a kiválasztott skill mappáját töltsd fel külön.
+**Claude + GitHub:** klónozd a repót vagy kapcsold a Projecthez; első szint — `claude-skills-clean/index.json` elérhető legyen. Második szint — a modell a repóban lévő útvonalakról olvas (nem feltétlen kell külön ZIP feltöltés).
 
 ## ChatGPT Project beállítás
 
@@ -47,30 +56,24 @@ Második szint: a kiválasztott skill tényleges fájljait vagy a teljes `claude
 2. A projektfájlokhoz töltsd fel legalább ezeket:
    - `claude-skills-index.json`
    - `PERSONA_SKILL_LOADER_PROMPT_HU.md`
-   - `claude-skills-clean.zip`
-   - opcionálisan: `README_PROJECT_SETUP_HU.md`, `PROJECT_UPLOAD_MANIFEST.json`
+   - opcionálisan: `claude-skills-clean.zip` vagy kicsomagolt `claude-skills-clean/` részmappák
 3. Nyisd meg a projektbeállításokat.
-4. A projektinstrukciók mezőbe illeszd be a `CHATGPT_CLAUDE_PROJECT_INSTRUCTIONS_HU.md` teljes tartalmát.
-5. Indíts új beszélgetést a projekten belül, és kérj egy konkrét feladatot, például: „Tervezz RAG architektúrát egy belső dokumentumkeresőhöz.”
+4. A projektinstrukciók mezőbe másold a **`PERSONA_SKILL_LOADER_PROMPT_HU.md`** rövid beilleszthető blokkját, vagy saját összefoglalót ugyanezen szabályokkal (index → egy skill → csak szükséges fájlok).
+5. Indíts új beszélgetést a projekten belül, és kérj egy konkrét feladatot.
 
-Megjegyzés: ha a projekt nem lát bele közvetlenül a ZIP belső fájlszerkezetébe, csomagold ki lokálisan a ZIP-et, majd töltsd fel a releváns skill mappáit vagy fájljait. Nagy csomagnál ne próbáld minden fájlt egyszerre a kontextusba kényszeríteni.
+Megjegyzés: ha a projekt nem lát bele közvetlenül a ZIP belső fájlszerkezetébe, csomagold ki lokálisan a ZIP-et, majd töltsd fel a releváns skill mappáit vagy fájljait.
 
-## Claude Project beállítás
+## Claude Project / Claude Code beállítás (GitHub)
 
-1. Hozz létre egy új Claude Projectet, például: `Claude Skills Router`.
-2. A Project Knowledge részbe töltsd fel:
-   - `claude-skills-index.json`
-   - `PERSONA_SKILL_LOADER_PROMPT_HU.md`
-   - `claude-skills-clean.zip` vagy a kicsomagolt releváns skill-mappák
-3. A Project Instructions mezőbe illeszd be a `CHATGPT_CLAUDE_PROJECT_INSTRUCTIONS_HU.md` tartalmát.
-4. Indíts új chatet a projekten belül.
-5. Teszteld egy konkrét feladattal, és ellenőrizd, hogy Claude megnevezi-e a kiválasztott skillt.
+1. Klónozd ezt a repót, vagy nyisd meg Claude Code-ban / kösd össze a Claude Projecttel úgy, hogy a fájlok a workspace-ben legyenek.
+2. **Project Knowledge** (ha használsz feltöltést): elég lehet a `claude-skills-index.json`; sok esetben a repó már elég, és nincs szükség dupla feltöltésre.
+3. A **Project Instructions** mezőbe illeszd be a **`CLAUDE_PROJECT_INSTRUCTIONS.md`** teljes tartalmát (vagy a `PERSONA_SKILL_LOADER_PROMPT_CLAUDE.md` rövid verzióját).
+4. A részletes router-viselkedéshez tartsd a repóban a **`PERSONA_SKILL_LOADER_PROMPT_CLAUDE.md`** fájlt, és hivatkozz rá az instrukcióban (ahogy a `CLAUDE_PROJECT_INSTRUCTIONS.md` teszi).
+5. Indíts új chatet; teszteld úgy, hogy Claude megnevezi-e a kiválasztott skill útvonalát.
 
 ## Projektinstrukció rövid célja
 
-A projektinstrukció ezt mondja az LLM-nek:
-
-- Először az `index.json` alapján tájékozódjon.
+- Először az **index** alapján tájékozódjon.
 - Azonosítsa a feladat domainjét.
 - Válassza ki a legjobb skillt.
 - Először csak a skill `SKILL.md` fájlját használja.
@@ -144,14 +147,15 @@ Elvárt LLM-működés:
 Használd a feltöltött skill-csomagot. A feladat: tervezz egy RAG-alapú dokumentumkeresőt egy 200 fős szervezetnek. Először nevezd meg, melyik skillt választottad az index alapján, majd készíts architektúrát, implementációs tervet és kockázatlistát.
 ```
 
+(Claude + repó esetén: cseréld „feltöltött skill-csomagot” → „a repó `claude-skills-clean` katalógusát”.)
+
 ## Hibakeresés
 
 Ha az LLM nem talál skillt:
 
-- Ellenőrizd, hogy a `claude-skills-index.json` tényleg fel van-e töltve.
+- Ellenőrizd, hogy a `claude-skills-index.json` vagy `claude-skills-clean/index.json` elérhető-e (feltöltés vagy repó).
 - Kérd meg: „Olvasd el az index fájlt, és listázd a releváns skill-jelölteket.”
-- Ha ZIP-et használsz, ellenőrizd, hogy a platform képes-e a ZIP belső fájljait olvasni.
-- Ha nem, töltsd fel külön a kiválasztott skill mappáját vagy legalább annak `SKILL.md` fájlját.
+- ChatGPT + ZIP: ellenőrizd, hogy a platform látja-e a ZIP belső fájljait; ha nem, tölts fel külön a skill mappát vagy `SKILL.md`-t.
 
 Ha túl általános választ ad:
 
